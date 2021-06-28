@@ -1,0 +1,4 @@
+include ':hilibrary'
+include ':hilog'
+include ':app'
+rootProject.name = "Library"
