@@ -1,0 +1,133 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+'abstract class AbstractList
+'abstract AbstractCollection
+'interface List
+'interface Collection
+'
+'List <|-- AbstractList
+'Collection <|-- AbstractCollection
+'
+'Collection <|- List
+'AbstractCollection <|- AbstractList
+'AbstractList <|-- ArrayList
+'
+'class ArrayList {
+'Object[] elementData
+'size()
+'}
+
+class HiLog{
+static void v(Object...contents)
+static void d(Object...contents)
+static void i(Object...contents)
+static void w(Object...contents)
+static void e(Object...contents)
+static void a(Object...contents)
+static void log(@NonNull HiLogConfig config,@HiLogType.Type int type,@NonNull String tag,Object...contents)
+
+}
+note left: log的门面
+
+class HStackTraceUtil{
+}
+note top:HiLog的堆栈工具类
+
+class HiLogMo{
+long timeMills
+int level
+String tag
+String log
+}
+note top:Hilog的日志Model
+
+class HilogType{
+}
+note top:HiLog的日志类型
+
+interface jsonParser{
+}
+note top:HiLog的日志序列化接口
+
+class HiLogManager{
+static HiLogManager getInstance()
+static void init(@NonNull HiLogConfig config,HiLogPrinter... printers)
+HiLogConfig getConfig()
+List<HiLogPrinter> getPrinters()
+void addPrinter(HiLogPrinter printer)
+void removePrinter(HiLogPrinter printer)
+}
+note right:HiLog管理类
+
+class HiLogConfig{
+}
+HiLogManager o-- HiLogConfig
+
+
+class HiFilePrinter{
+}
+note bottom: HiLog的文件打印器
+interface HiLogPrinter{
+void print(@NonNull HiLogConfig config,int level,String tag,@NonNull String printString)
+}
+note right:HiLogPrinter的日志答应接口，基于该接\n口可以自定义日志打印方式
+
+HiFilePrinter .up.|>HiLogPrinter
+
+class HiViewPrinter{
+Recycerview recycerview
+LogAdapter adapter
+HiViewPrinterProvider viewProvider
+}
+note right:HiLog的视图打印器
+
+HiViewPrinter .up.|>HiLogPrinter
+
+class HiViewPrinterProvider{
+FrameLayout rootView
+View floatingView
+boolean isOpen
+FrameLayout logView
+Recycerview recycerview
+}
+
+class HiConsolePrinter{
+}
+note top:HiLog的控制台打印器
+
+HiViewPrinter *--> HiViewPrinterProvider
+HiLog .. HiLogManager
+HiLog .. HiLogPrinter
+HiLogManager o-down- HiLogPrinter
+HiConsolePrinter .up.|>HiLogPrinter
+
+
+abstract class HiLogConfig{
+JsonParser injectsJsonParser
+String getGlobalTag()
+boolean enable()
+boolean includeThread()
+int stackTraceDepth()
+HiLogPrinter[] printers()
+}
+
+interface HiLogFromatter{
+String format(T data)
+}
+class HiStackTraceFormatter{
+}
+
+class HiThreadFormatter{
+}
+
+HiStackTraceFormatter .up.|> HiLogFromatter
+
+HiThreadFormatter .up.|> HiLogFromatter
+
+HiStackTraceFormatter -up-*HiLogConfig
+HiThreadFormatter -up-*HiLogConfig
+
+
+
+@enduml
