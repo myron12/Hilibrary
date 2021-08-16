@@ -4,6 +4,9 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Tips
  * 1.打印堆栈信息
@@ -72,12 +75,26 @@ public class HiLog {
             return;
         }
         StringBuilder sb = new StringBuilder();
-        String body = parseBady(contents);
+        if (config.includeThread()) {
+            sb.append(HiLogConfig.HI_THREAD_FORMATTER.format(Thread.currentThread())).append("\n");
+        }
+        if (config.stackTraceDepth() > 0) {
+            sb.append(HiLogConfig.HI_STACK_TRACE_FORMATTER.format(new Throwable().getStackTrace())).append("\n");
+        }
+        String body = parseBady(contents, config);
         sb.append(body);
         Log.println(type, tag, sb.toString());
+        List<HiLogPrinter> printers = config.printers() != null ? Arrays.asList(config.printers()) : HiLogManager.getInstance().getPrinters();
+        //打印log
+        for (HiLogPrinter printer : printers) {
+            printer.print(config, type, tag, sb.toString());
+        }
     }
 
-    private static String parseBady(@NonNull Object[] contents) {
+    private static String parseBady(@NonNull Object[] contents, @NonNull HiLogConfig config) {
+        if (config.injectJsonParse() != null) {
+            return config.injectJsonParse().toJson(contents);
+        }
         StringBuilder sb = new StringBuilder();
         for (Object o : contents) {
             sb.append(o.toString()).append(";");
