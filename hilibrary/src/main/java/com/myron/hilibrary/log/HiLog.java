@@ -1,7 +1,5 @@
 package com.myron.hilibrary.log;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 
 import java.util.Arrays;
@@ -14,6 +12,13 @@ import java.util.List;
  * 3.模拟控制台
  */
 public class HiLog {
+    private static final String HI_LOG_PACKAGE;
+
+    static {
+        String className = HiLog.class.getName();
+        HI_LOG_PACKAGE = className.substring(0, className.lastIndexOf(".") + 1);
+    }
+
     public static void v(Object... contents) {
         log(HiLogType.V, contents);
     }
@@ -79,11 +84,10 @@ public class HiLog {
             sb.append(HiLogConfig.HI_THREAD_FORMATTER.format(Thread.currentThread())).append("\n");
         }
         if (config.stackTraceDepth() > 0) {
-            sb.append(HiLogConfig.HI_STACK_TRACE_FORMATTER.format(new Throwable().getStackTrace())).append("\n");
+            sb.append(HiLogConfig.HI_STACK_TRACE_FORMATTER.format(HiStackTraceUtil.getCroppedRealStackTrace(new Throwable().getStackTrace(), HI_LOG_PACKAGE, config.stackTraceDepth()))).append("\n");
         }
         String body = parseBady(contents, config);
         sb.append(body);
-        Log.println(type, tag, sb.toString());
         List<HiLogPrinter> printers = config.printers() != null ? Arrays.asList(config.printers()) : HiLogManager.getInstance().getPrinters();
         //打印log
         for (HiLogPrinter printer : printers) {

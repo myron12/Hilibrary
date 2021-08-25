@@ -25,6 +25,8 @@ public class HiConsolePrinter implements HiLogPrinter {
             if (index != len) {//最后一行无法整除
                 Log.println(level, tag, printString.substring(index, len));
             }
+        } else {
+            Log.println(level, tag, printString);
         }
 
     }

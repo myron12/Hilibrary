@@ -27,6 +27,6 @@ class HiLogDemoActivity : AppCompatActivity() {
                 return 0
             }
         }, HiLogType.E, "-----", "5566")
-        HiLog.a("9900")
+        HiLog.e("9900")
     }
 }
