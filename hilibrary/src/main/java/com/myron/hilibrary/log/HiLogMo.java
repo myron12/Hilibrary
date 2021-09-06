@@ -28,4 +28,36 @@ public class HiLogMo {
     public String formate(long timeMillis) {
         return sdf.format(timeMillis);
     }
+
+    public long getTimeMillis() {
+        return timeMillis;
+    }
+
+    public void setTimeMillis(long timeMillis) {
+        this.timeMillis = timeMillis;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
+    public String getLog() {
+        return log;
+    }
+
+    public void setLog(String log) {
+        this.log = log;
+    }
 }
